@@ -95,6 +95,17 @@ app.post("/login", async (req, res) => {
   console.log("Received login request:", { userId, pwd }); // Debugging log
 
   try {
+    // Check for admin credentials
+    if (userId === "admin" && pwd === "000") {
+      console.log("Admin login successful"); // Debugging log
+      const token = jwt.sign({ userId: "admin" }, SECRET_KEY, {
+        expiresIn: "1h",
+      });
+      return res
+        .status(200)
+        .json({ message: "Admin login successful", token, userId: "admin" });
+    }
+
     const user = await Account.findOne({ userId });
 
     if (!user) {
